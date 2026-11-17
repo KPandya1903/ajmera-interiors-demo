@@ -19,8 +19,8 @@ export default function Process() {
           {steps.map(([title, text], i) => (
             <li key={title} className="py-8 lg:px-8 lg:py-10 lg:first:pl-0 lg:last:pr-0">
               <span className="font-serif text-4xl text-gold/70">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-6 text-[13px] font-semibold uppercase tracking-[0.16em]">{title}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink/65">{text}</p>
+              <h3 className="mt-6 text-[0.8125rem] font-semibold uppercase tracking-[0.16em]">{title}</h3>
+              <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink/65">{text}</p>
             </li>
           ))}
         </ol>

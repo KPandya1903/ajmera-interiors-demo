@@ -53,10 +53,11 @@ export default function Header() {
 
   const light = (solid || open) && !(onDark && !open); // ivory bar with dark text
   const theme = light ? "light" : "dark";
+  // --hh is the bar height; the mobile menu fills the rest of the screen. Landscape phones get a slimmer bar.
   return (
     <header
       data-theme={theme}
-      className={`fixed inset-x-0 top-0 z-40 transition-[background-color,color,box-shadow] duration-500 ${
+      className={`fixed inset-x-0 top-0 z-40 pt-[env(safe-area-inset-top)] transition-[background-color,color,box-shadow] duration-500 ${solid ? "[--hh:4rem]" : "[--hh:5rem]"} short:[--hh:3.5rem] ${
         light
           ? "bg-ivory/95 text-ink shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur"
           : onDark
@@ -64,13 +65,13 @@ export default function Header() {
             : "text-ivory"
       }`}
     >
-      <div className={`mx-auto flex max-w-[1400px] items-center justify-between px-6 transition-[height] duration-500 md:px-12 ${solid ? "h-16" : "h-20"}`}>
-        <a href="#top" className="leading-none" aria-label="Ajmera Interiors, home">
-          <span className="block text-[15px] font-semibold tracking-[0.34em]">AJMERA</span>
-          <span className="mt-1 block text-[9px] font-normal tracking-[0.62em] opacity-80">INTERIORS</span>
+      <div className="mx-auto flex h-(--hh) max-w-site items-center justify-between px-gutter transition-[height] duration-500">
+        <a href="#top" className="leading-none max-lg:-my-2 max-lg:py-2" aria-label="Ajmera Interiors, home">
+          <span className="block text-[0.9375rem] font-semibold tracking-[0.34em]">AJMERA</span>
+          <span className="mt-1 block text-[0.5625rem] font-normal 3xl:text-[0.625rem] tracking-[0.62em] opacity-80">INTERIORS</span>
         </a>
 
-        <nav className="hidden items-center gap-9 text-[11px] font-medium uppercase tracking-[0.2em] lg:flex" aria-label="Main">
+        <nav className="hidden items-center gap-9 text-label font-medium uppercase tracking-[0.2em] lg:flex" aria-label="Main">
           {links.map(([label, href]) => (
             <a key={href} href={href} className="relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100">
               {label}
@@ -83,13 +84,13 @@ export default function Header() {
             href={WHATSAPP}
             target="_blank"
             rel="noreferrer"
-            className={`hidden px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.2em] transition-colors sm:inline-block ${
+            className={`hidden items-center px-5 py-2.5 text-label font-medium uppercase tracking-[0.2em] transition-colors sm:inline-flex max-lg:min-h-11 ${
               light ? "bg-navy text-ivory hover:bg-gold" : "bg-ivory text-navy hover:bg-gold hover:text-white"
             }`}
           >
             Book a consultation
           </a>
-          <button onClick={() => setOpen((o) => !o)} className="grid h-10 w-10 place-items-center lg:hidden" aria-label="Menu" aria-expanded={open} aria-controls="mobile-nav">
+          <button onClick={() => setOpen((o) => !o)} className="-mr-2.5 grid h-11 w-11 place-items-center lg:hidden" aria-label="Menu" aria-expanded={open} aria-controls="mobile-nav">
             <span className="relative block h-3 w-6">
               <span className={`absolute left-0 top-0 h-px w-6 bg-current transition ${open ? "translate-y-1.5 rotate-45" : ""}`} />
               <span className={`absolute bottom-0 left-0 h-px w-6 bg-current transition ${open ? "-translate-y-1.5 -rotate-45" : ""}`} />
@@ -99,13 +100,13 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav id="mobile-nav" className={`overflow-y-auto border-t border-black/5 bg-ivory px-6 pb-8 pt-4 lg:hidden ${solid ? "h-[calc(100svh-4rem)]" : "h-[calc(100svh-5rem)]"}`} aria-label="Mobile">
+        <nav id="mobile-nav" className="h-[calc(100svh-var(--hh)-env(safe-area-inset-top))] overflow-y-auto overscroll-contain border-t border-black/5 bg-ivory px-gutter pb-[max(2rem,env(safe-area-inset-bottom))] pt-4 short:pt-1 lg:hidden" aria-label="Mobile">
           {links.map(([label, href]) => (
-            <a key={href} href={href} onClick={() => setOpen(false)} className="block border-b border-black/5 py-4 font-serif text-2xl">
+            <a key={href} href={href} onClick={() => setOpen(false)} className="block border-b border-black/5 py-4 font-serif text-2xl short:py-2.5 short:text-xl">
               {label}
             </a>
           ))}
-          <a href={WHATSAPP} className="mt-6 block bg-navy py-4 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-ivory">
+          <a href={WHATSAPP} className="mt-6 block bg-navy py-4 short:mt-4 text-center text-label font-medium uppercase tracking-[0.2em] text-ivory">
             Book a consultation
           </a>
         </nav>

@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- photos are pre-optimised WebP served statically */
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { FOCUS_Y, homeOf, photoSrc, photos, type Photo } from "@/lib/photos";
-import { Container, Eyebrow, SectionTitle } from "./ui";
+import { Container, Eyebrow, SectionTitle, arrowNav } from "./ui";
 
 const PAGE = 36;
 const FILTERS = ["All", "3 BHK", "5 BHK"] as const;
@@ -82,22 +82,28 @@ export default function PhotoWall() {
               Every corner, <em className="text-gold">up close.</em>
             </SectionTitle>
           </div>
-          <div className="flex gap-8 border-b border-black/10" role="tablist" aria-label="Filter photos by home">
+          <div className="flex gap-7 border-b border-black/10 sm:gap-8" role="group" aria-label="Filter photos by home" onKeyDown={arrowNav}>
             {FILTERS.map((f) => (
               <button
                 key={f}
-                role="tab"
-                aria-selected={filter === f}
+                aria-pressed={filter === f}
                 onClick={() => {
                   setFilter(f);
                   setShown(PAGE);
                   setZoomed(null);
                 }}
-                className={`-mb-px border-b pb-3 text-[11px] font-medium uppercase tracking-[0.2em] transition-colors ${
+                className={`-mb-px border-b max-lg:whitespace-nowrap pb-3 pt-4 text-label lg:pt-0 font-medium uppercase tracking-[0.2em] transition-colors ${
                   filter === f ? "border-ink text-ink" : "border-transparent text-ink/45 hover:text-ink"
                 }`}
               >
-                {f === "All" ? "All work" : `${f} Residence`}
+                {f === "All" ? (
+                  "All work"
+                ) : (
+                  <>
+                    {f}
+                    <span className="hidden sm:inline"> Residence</span>
+                  </>
+                )}
               </button>
             ))}
           </div>
@@ -108,8 +114,9 @@ export default function PhotoWall() {
             derived from the container width (cqw) so rows line up to the pixel. */}
         <div className="@container">
           <div
-            className="grid grid-flow-row-dense grid-cols-[repeat(var(--cols),minmax(0,1fr))] gap-(--gap) [--cols:2] [--gap:8px] md:[--cols:3] md:[--gap:12px] xl:[--cols:4]"
+            className="grid grid-flow-row-dense grid-cols-[repeat(var(--cols),minmax(0,1fr))] gap-(--gap) [--cols:2] [--gap:0.5rem] md:[--cols:3] md:[--gap:0.75rem] xl:[--cols:4] 3xl:[--cols:5] 4xl:[--cols:6]"
             style={{ gridAutoRows: "calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) * 1.25)" }}
+            onKeyDown={arrowNav}
           >
             {visible.map((p) => {
               const isZoomed = zoomed?.id === p.id;
@@ -121,7 +128,7 @@ export default function PhotoWall() {
                   onMouseLeave={() => isZoomed && setZoomed(null)}
                   aria-pressed={isZoomed}
                   aria-label={`${isZoomed ? "Shrink" : "Enlarge"} photo, ${p.label}`}
-                  className={`group relative block h-full w-full overflow-hidden bg-sand transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  className={`group relative block h-full w-full scroll-my-24 overflow-hidden bg-sand focus-visible:z-10 transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     wide ? "col-span-2" : ""
                   } ${isZoomed ? "z-20 shadow-[0_24px_60px_rgba(0,0,0,0.35)]" : "z-0 cursor-zoom-in"}`}
                   style={{
@@ -140,8 +147,8 @@ export default function PhotoWall() {
                       isZoomed
                         ? undefined
                         : wide
-                          ? "(min-width:1280px) 50vw, (min-width:768px) 66vw, 100vw"
-                          : "(min-width:1280px) 25vw, (min-width:768px) 33vw, 50vw"
+                          ? "(min-width:3000px) 34vw, (min-width:2400px) 40vw, (min-width:1280px) 50vw, (min-width:768px) 66vw, 100vw"
+                          : "(min-width:3000px) 17vw, (min-width:2400px) 20vw, (min-width:1280px) 25vw, (min-width:768px) 33vw, 50vw"
                     }
                     width={p.w}
                     height={p.h}
@@ -153,10 +160,10 @@ export default function PhotoWall() {
                   />
                   <span
                     className={`pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-black/45 via-transparent to-transparent p-4 transition-opacity duration-500 ${
-                      isZoomed ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                      isZoomed ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
                     }`}
                   >
-                    <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white">{p.label}</span>
+                    <span className="text-micro font-medium uppercase tracking-[0.22em] text-white">{p.label}</span>
                   </span>
                 </button>
               );
@@ -165,7 +172,7 @@ export default function PhotoWall() {
         </div>
 
         {shown < list.length && <div ref={sentinel} className="h-10" aria-hidden />}
-        <p className="pt-10 text-center text-[11px] uppercase tracking-[0.2em] text-ink/40">
+        <p className="pt-10 text-center text-label uppercase tracking-[0.2em] text-ink/40">
           {Math.min(shown, list.length)} of {list.length} photographs
         </p>
       </Container>

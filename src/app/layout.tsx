@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 
@@ -19,6 +19,16 @@ export const metadata: Metadata = {
   title: "Ajmera Interiors | Interior Designers in Mumbai",
   description:
     "Ajmera Interiors is a family-owned interior design studio in Mumbai. Luxury homes, 3D design before work begins, and budgets that respect yours.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // let the page run under the notch; header, buttons and gutters pad with env(safe-area-inset-*)
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f3ec" },
+    { media: "(prefers-color-scheme: dark)", color: "#1f2a44" },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

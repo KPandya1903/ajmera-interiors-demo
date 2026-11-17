@@ -10,6 +10,62 @@
   --font-sans: var(--font-sans), system-ui, sans-serif;
 }
 
+/* Responsive tokens (not inlined, so the media queries below can retune them).
+   text-micro / text-label replace the old 10px / 11px uppercase labels; they are rem so they
+   follow the root size, and grow further on big screens so nothing reads under ~14px on a TV. */
+@theme {
+  --text-micro: 0.625rem;
+  --text-label: 0.6875rem;
+  --container-site: 87.5rem; /* 1400px at the 16px baseline */
+  /* Very large screen steps. rem media queries use the browser's 16px, so these are 2400px and
+     3000px; as theme breakpoints they sort after 2xl and win over sm/md/xl. Everything up to
+     2399px (laptops and 1920/2048 monitors) keeps the standard desktop layout. */
+  --breakpoint-3xl: 150rem;
+  --breakpoint-4xl: 187.5rem;
+}
+
+/* Short screens (phones in landscape): compact hero and header. */
+@custom-variant short (@media (max-height: 500px));
+
+/* Side padding that also clears the notch / rounded corners on phones held sideways. */
+@utility px-gutter {
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+
+:root {
+  --gutter: 1.5rem;
+}
+@media (min-width: 48rem) {
+  :root {
+    --gutter: 3rem;
+  }
+}
+
+/* Very large screens (2400px+ CSS width, e.g. 4K TVs at DPR 1): scale the whole rem-based layout
+   up, widen the column and lift the smallest labels so the page fills the screen and stays legible
+   from the sofa. Keep these in step with --breakpoint-3xl / -4xl above. */
+@media (min-width: 2400px) {
+  html {
+    font-size: 112.5%; /* 18px */
+  }
+  :root {
+    --container-site: 110rem; /* ~1980px */
+    --text-micro: 0.8rem; /* ~14.4px */
+    --text-label: 0.8125rem; /* ~14.6px */
+  }
+}
+@media (min-width: 3000px) {
+  html {
+    font-size: 137.5%; /* 22px: column ~2420px */
+  }
+}
+@media (min-width: 3600px) {
+  html {
+    font-size: 200%; /* 32px: a 3840px-wide 4K TV at DPR 1 reads like 1920 at 2x */
+  }
+}
+
 html {
   scroll-behavior: smooth;
   background: var(--color-ivory);
@@ -25,6 +81,18 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 3px;
+}
+@media (min-width: 2400px) {
+  :focus-visible {
+    outline-width: 3px;
+    outline-offset: 4px;
+  }
+}
+@media (min-width: 3000px) {
+  :focus-visible {
+    outline-width: 4px;
+    outline-offset: 6px;
+  }
 }
 #top :focus-visible,
 footer :focus-visible,
