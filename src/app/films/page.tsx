@@ -1,23 +1,36 @@
 import type { Metadata } from "next";
+import FilmsPageBody from "@/components/FilmsPage";
 import { PageHeader } from "@/components/PageShell";
-import { Container } from "@/components/ui";
+import { videos } from "@/lib/videos";
+
+const description = "Walkthroughs and reels of homes designed by Ajmera Interiors in Mumbai: step inside, room by room.";
 
 export const metadata: Metadata = {
   title: "Films",
-  description: "Walk through our homes, room by room.",
+  description,
   alternates: { canonical: "/films" },
+  openGraph: {
+    type: "website",
+    siteName: "Ajmera Interiors",
+    locale: "en_IN",
+    url: "/films",
+    title: "Films | Ajmera Interiors",
+    description,
+    images: [{ url: "/hero/EFCB0100-1280.webp", width: 1280, height: 853, alt: "A living room designed by Ajmera Interiors" }],
+  },
 };
 
-// TODO(page agent): replace this stub with the real /films page.
+// No VideoObject JSON-LD: Google requires uploadDate (and a thumbnail it can crawl), which we don't have
+// for Drive-hosted clips. Add it once clips move to YouTube with real dates.
+
+// The whole page sits on the dark films ground. id="videos" switches the fixed header to its dark bar.
 export default function Page() {
   return (
-    <>
-      <PageHeader eyebrow="Walkthroughs and reels" title="Films">
-        <p>Walk through our homes, room by room.</p>
+    <div id="videos" className="bg-night text-ivory">
+      <PageHeader eyebrow="Films" title={<>Walk through <em className="text-gold-soft">our homes.</em></>} light>
+        <p>Short films from homes we have designed and finished. Choose a home, press play, and step inside.</p>
       </PageHeader>
-      <Container className="pb-24 md:pb-32">
-        <p className="text-ink/60">TODO: this page is being built.</p>
-      </Container>
-    </>
+      <FilmsPageBody items={videos} />
+    </div>
   );
 }

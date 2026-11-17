@@ -5,43 +5,58 @@ import { useEffect, useRef, useState } from "react";
 import { embed, label, poster, posterFallback, posterRotation, videos, watch, type Video } from "@/lib/videos";
 import { Eyebrow, SectionTitle, arrowNav } from "./ui";
 
-function Poster({ v }: { v: Video }) {
+/** Video poster: fills its (fixed-aspect) parent. Lazy by default; pass `eager` for an above-the-fold poster. */
+export function Poster({ v, eager, className = "" }: { v: Video; eager?: boolean; className?: string }) {
   const rot = posterRotation(v);
   const fb = posterFallback(v);
   const onError = fb ? (e: React.SyntheticEvent<HTMLImageElement>) => { if (e.currentTarget.src !== fb) e.currentTarget.src = fb; } : undefined;
+  const load = eager ? ({ loading: "eager", fetchPriority: "high" } as const) : ({ loading: "lazy" } as const);
   if (rot === 0)
-    return <img src={poster(v)} alt="" loading="lazy" referrerPolicy="no-referrer" onError={onError} className="h-full w-full object-cover" />;
+    return <img src={poster(v)} alt="" {...load} decoding="async" referrerPolicy="no-referrer" onError={onError} className={`h-full w-full object-cover ${className}`} />;
   /* Drive returns some phone clips as sideways 16:9 frames; rotate upright inside the 9:16 card */
   return (
     <img
       src={poster(v)}
       alt=""
-      loading="lazy"
+      {...load}
+      decoding="async"
       referrerPolicy="no-referrer"
       onError={onError}
-      className="absolute left-1/2 top-1/2 max-w-none object-cover"
+      className={`absolute left-1/2 top-1/2 max-w-none object-cover ${className}`}
       style={{ width: "177.78%", height: "56.25%", transform: `translate(-50%, -50%) rotate(${rot}deg)` }}
     />
   );
 }
 
-/** One horizontally scrolling row of video cards, with its own player modal. Reused by the home Films teaser and /films. */
-export function VideoRail({ title, items, portrait }: { title: string; items: Video[]; portrait?: boolean }) {
-  const track = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState<Video | null>(null);
-  const scroll = (dir: 1 | -1) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.85, behavior: "smooth" });
+/** Small filled play triangle used on cards and the featured poster. */
+export function PlayIcon({ className = "h-3 w-2.5" }: { className?: string }) {
+  return (
+    <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden className={className}>
+      <path d="M0 0l10 6-10 6z" fill="currentColor" />
+    </svg>
+  );
+}
 
+/**
+ * Full-screen player for one clip. The iframe only exists while this is mounted, so nothing loads
+ * until a viewer asks for it. Focus moves to Close, Tab is trapped inside, Escape (or a click on the
+ * backdrop) closes, and focus returns to whatever opened it.
+ */
+export function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const close = useRef(onClose);
+  useEffect(() => {
+    close.current = onClose;
+  });
 
   useEffect(() => {
-    if (!playing) return;
     const opener = document.activeElement as HTMLElement | null;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") return setPlaying(null);
+      if (e.key === "Escape") return close.current();
       if (e.key !== "Tab" || !dialogRef.current) return;
       const f = Array.from(dialogRef.current.querySelectorAll<HTMLElement>("button, a[href], iframe, [tabindex]:not([tabindex='-1'])"));
       if (!f.length) return;
@@ -65,7 +80,32 @@ export function VideoRail({ title, items, portrait }: { title: string; items: Vi
       document.body.style.overflow = prevOverflow;
       opener?.focus();
     };
-  }, [playing]);
+  }, [video]);
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-4" onClick={onClose} role="dialog" aria-modal="true" aria-label={`${label(video)} video`} ref={dialogRef}>
+      <div
+        className={`relative w-full ${video.kind === "reel" ? "aspect-[9/16] max-h-[88vh] max-w-[calc(88vh*9/16)]" : "aspect-video max-w-[min(80rem,94vw,calc(88vh*16/9))]"}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <iframe src={embed(video)} title={`Ajmera Interiors ${label(video)}`} allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowFullScreen className="h-full w-full" />
+        <a href={watch(video)} target="_blank" rel="noreferrer" className="absolute -bottom-8 right-0 text-xs text-ivory/70 underline max-lg:-bottom-10 max-lg:py-2 max-lg:text-sm 3xl:-bottom-10 3xl:text-sm">
+          {video.youtubeId ? "Watch on YouTube" : "Open in Google Drive"}
+        </a>
+      </div>
+      <button ref={closeRef} onClick={onClose} aria-label="Close video" className="absolute right-[max(1.25rem,env(safe-area-inset-right))] top-[max(1.25rem,env(safe-area-inset-top))] text-3xl text-ivory max-lg:-mr-3 max-lg:-mt-3 max-lg:grid max-lg:h-12 max-lg:w-12 max-lg:place-items-center">
+        ×
+      </button>
+    </div>
+  );
+}
+
+/** One horizontally scrolling row of video cards, with its own player modal. Reused by the home Films teaser and /films. */
+export function VideoRail({ title, items, portrait }: { title: string; items: Video[]; portrait?: boolean }) {
+  const track = useRef<HTMLDivElement>(null);
+  const [playing, setPlaying] = useState<Video | null>(null);
+  const scroll = (dir: 1 | -1) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.85, behavior: "smooth" });
+  if (!items.length) return null; // no clips of this kind yet: render nothing rather than an empty rail
 
   return (
     <div>
@@ -102,29 +142,14 @@ export function VideoRail({ title, items, portrait }: { title: string; items: Vi
                 {v.project}
               </span>
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ivory/60 transition-colors group-hover:border-ivory group-hover:bg-ivory group-hover:text-ink">
-                <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden className="h-3 w-2.5"><path d="M0 0l10 6-10 6z" fill="currentColor" /></svg>
+                <PlayIcon />
               </span>
             </span>
           </button>
         ))}
       </div>
 
-      {playing && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-4" onClick={() => setPlaying(null)} role="dialog" aria-modal="true" aria-label={`${label(playing)} video`} ref={dialogRef}>
-          <div
-            className={`relative w-full ${playing.kind === "reel" ? "aspect-[9/16] max-h-[88vh] max-w-[calc(88vh*9/16)]" : "aspect-video max-w-[min(80rem,94vw,calc(88vh*16/9))]"}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <iframe src={embed(playing)} title={`Ajmera Interiors ${label(playing)}`} allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowFullScreen className="h-full w-full" />
-            <a href={watch(playing)} target="_blank" rel="noreferrer" className="absolute -bottom-8 right-0 text-xs text-ivory/70 underline max-lg:-bottom-10 max-lg:py-2 max-lg:text-sm 3xl:-bottom-10 3xl:text-sm">
-              {playing.youtubeId ? "Watch on YouTube" : "Open in Google Drive"}
-            </a>
-          </div>
-          <button ref={closeRef} onClick={() => setPlaying(null)} aria-label="Close video" className="absolute right-[max(1.25rem,env(safe-area-inset-right))] top-[max(1.25rem,env(safe-area-inset-top))] text-3xl text-ivory max-lg:-mr-3 max-lg:-mt-3 max-lg:grid max-lg:h-12 max-lg:w-12 max-lg:place-items-center">
-            ×
-          </button>
-        </div>
-      )}
+      {playing && <VideoModal video={playing} onClose={() => setPlaying(null)} />}
     </div>
   );
 }

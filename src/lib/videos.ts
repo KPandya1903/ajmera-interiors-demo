@@ -32,3 +32,10 @@ export const posterFallback = (v: Video) => (v.youtubeId ? `https://i.ytimg.com/
 /** Rotation needed to make the poster upright (YouTube posters are always upright). */
 export const posterRotation = (v: Video) => (v.youtubeId ? 0 : (v.rotate ?? (v.kind === "reel" ? -90 : 0)));
 export const label = (v: Video) => `${v.project} ${v.kind}`;
+
+/** Display name for a home ("3 BHK" -> "3 BHK Residence"). */
+export const homeName = (project: string) => `${project} Residence`;
+
+/** Homes in the order they first appear in videos.json. */
+export const projectsOf = (list: Video[]) => [...new Set(list.map((v) => v.project))];
+
