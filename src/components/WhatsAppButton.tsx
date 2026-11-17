@@ -1,9 +1,16 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { WHATSAPP } from "./ui";
 
 export default function WhatsAppButton() {
+  // /contact already leads with WhatsApp (channel row and form), so the floating button would only repeat it.
+  if (usePathname() === "/contact") return null;
+  return <FloatingWhatsApp />;
+}
+
+function FloatingWhatsApp() {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {

@@ -1,32 +1,37 @@
 import Link from "next/link";
 import { NAV } from "@/lib/site";
+import { EMAILS, PHONES, SOCIAL } from "@/lib/contact";
+import ContactCtaGate from "./ContactCtaGate";
 import { Container, WHATSAPP } from "./ui";
 
-const social = [
-  ["Instagram", "https://instagram.com/ajmerainteriors"],
-  ["YouTube", "https://www.youtube.com/@AjmeraInteriors"],
-  ["Pinterest", "https://pin.it/2ymAAT2rU"],
-];
-
+// The footer keeps id="contact" on every page: /#contact links land here, and the floating WhatsApp
+// button hides while it is in view. The big CTA block is skipped on /contact, which is itself the CTA.
 export default function Footer() {
   return (
     <footer id="contact" className="bg-navy text-ivory">
-      <Container className="py-24 md:py-32">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-end">
-          <h2 className="font-serif text-[clamp(2.5rem,14vw,3rem)] font-normal leading-[1.02] sm:text-7xl">
-            Let&apos;s design
-            <br />
-            <em className="text-gold-soft">your home.</em>
-          </h2>
-          <div>
-            <p className="max-w-sm text-[1.0625rem] leading-relaxed text-ivory/70">Tell us about your space. The first consultation is free, at your home or ours.</p>
-            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="mt-8 inline-block bg-ivory px-8 py-4 text-center font-logo text-label font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
-              Message us on WhatsApp
-            </a>
+      <Container className="pb-24 pt-16 md:pb-32 md:pt-20">
+        <ContactCtaGate>
+          <div className="mb-12 grid gap-12 border-b border-white/15 pb-24 pt-8 md:pt-12 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+            <h2 className="font-serif text-[clamp(2.5rem,14vw,3rem)] font-normal leading-[1.02] sm:text-7xl">
+              Let&apos;s design
+              <br />
+              <em className="text-gold-soft">your home.</em>
+            </h2>
+            <div>
+              <p className="max-w-sm text-[1.0625rem] leading-relaxed text-ivory/70">Tell us about your space. The first consultation is free, at your home or ours.</p>
+              <a
+                href={WHATSAPP}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-8 inline-block bg-ivory px-8 py-4 text-center font-logo text-label font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white"
+              >
+                Message us on WhatsApp
+              </a>
+            </div>
           </div>
-        </div>
+        </ContactCtaGate>
 
-        <div className="mt-24 grid gap-10 border-t border-white/15 pt-12 text-sm sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <nav aria-label="Footer">
             <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Explore</p>
             <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1 max-lg:mt-0.5">
@@ -41,18 +46,24 @@ export default function Footer() {
           </nav>
           <div>
             <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Call</p>
-            <a href="tel:+919326451272" className="mt-3 block hover:text-gold-soft max-lg:mt-0.5 max-lg:py-2.5">+91 93264 51272</a>
-            <a href="tel:+917021336382" className="mt-1 block hover:text-gold-soft max-lg:mt-0 max-lg:py-2.5">+91 70213 36382</a>
+            {PHONES.map((p, i) => (
+              <a key={p.tel} href={`tel:${p.tel}`} className={`block hover:text-gold-soft max-lg:py-2.5 ${i ? "mt-1 max-lg:mt-0" : "mt-3 max-lg:mt-0.5"}`}>
+                {p.display}
+              </a>
+            ))}
           </div>
           <div>
             <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Email</p>
-            <a href="mailto:sanket@ajmerainteriors.com" className="mt-3 block hover:text-gold-soft max-lg:mt-0.5 max-lg:py-2.5">sanket@ajmerainteriors.com</a>
-            <a href="mailto:ishita@ajmerainteriors.com" className="mt-1 block hover:text-gold-soft max-lg:mt-0 max-lg:py-2.5">ishita@ajmerainteriors.com</a>
+            {EMAILS.map((e, i) => (
+              <a key={e.address} href={`mailto:${e.address}`} className={`block hover:text-gold-soft max-lg:py-2.5 ${i ? "mt-1 max-lg:mt-0" : "mt-3 max-lg:mt-0.5"}`}>
+                {e.address}
+              </a>
+            ))}
           </div>
           <div>
             <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Follow</p>
             <div className="mt-3 flex flex-wrap gap-x-6 max-lg:mt-0.5">
-              {social.map(([label, href]) => (
+              {SOCIAL.map(({ label, href }) => (
                 <a key={label} href={href} target="_blank" rel="noreferrer" className="hover:text-gold-soft max-lg:py-2.5">
                   {label}
                 </a>

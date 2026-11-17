@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { KeyboardEvent, ReactNode } from "react";
+import { whatsappUrl } from "@/lib/contact";
 
 export function Container({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <div className={`mx-auto w-full max-w-site px-gutter ${className}`}>{children}</div>;
@@ -39,7 +40,8 @@ export function ArrowLink({ href, children, light }: { href: string; children: R
   );
 }
 
-export const WHATSAPP = "https://wa.me/919326451272?text=Hi%20Ajmera%20Interiors%2C%20I%27d%20like%20to%20discuss%20my%20home.";
+/** Default "chat with us" link used by the header, footer and floating button. */
+export const WHATSAPP = whatsappUrl("Hi Ajmera Interiors, I'd like to discuss my home.");
 
 /**
  * Arrow-key (TV remote D-pad) navigation inside a group: moves focus to the nearest button or link
