@@ -1,6 +1,7 @@
 import data from "@/data/photos.json";
 import duplicates from "@/data/duplicates.json";
 import hidden from "@/data/hidden.json";
+import { withBase } from "@/lib/site";
 
 export type Photo = {
   id: string;
@@ -28,7 +29,7 @@ for (const [rep, frames] of Object.entries(duplicates as Record<string, string[]
 
 export const photos = (data as Photo[]).filter((p) => !hiddenIds.has(p.id));
 
-export const photoSrc = (p: Photo, width: 640 | 1280) => `/photos/${p.project}/${p.id.split("/")[1]}-${width}.webp`;
+export const photoSrc = (p: Photo, width: 640 | 1280) => withBase(`/photos/${p.project}/${p.id.split("/")[1]}-${width}.webp`);
 
 /** Groups the project folders into the two homes shown as filters. */
 export const homeOf = (p: Photo) => (p.project.startsWith("5bhk") ? "5 BHK" : "3 BHK");

@@ -4,7 +4,7 @@ import ContactForm from "@/components/ContactForm";
 import { PageHeader } from "@/components/PageShell";
 import { Container } from "@/components/ui";
 import { EMAILS, PHONES, SOCIAL } from "@/lib/contact";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 const title = "Contact";
 const description =
@@ -32,7 +32,7 @@ const jsonLd = {
   "@id": `${SITE_URL}/#business`,
   name: "Ajmera Interiors",
   description: "Family-owned luxury residential interior design studio in Mumbai.",
-  url: SITE_URL,
+  url: absoluteUrl("/"),
   telephone: PHONES[0].tel,
   email: EMAILS[0].address,
   areaServed: { "@type": "City", name: "Mumbai", containedInPlace: { "@type": "Country", name: "India" } },

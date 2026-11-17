@@ -1,0 +1,61 @@
+# Builds the static export and publishes it to GitHub Pages as a DEMO under
+# https://<owner>.github.io/<repo>/ (a sub-path, so NEXT_PUBLIC_BASE_PATH is set).
+# The demo is marked noindex. Photos/hero/team images are committed in public/, so the
+# `npm run photos` / `hero` / video scripts (which need the raw camera files) are not run here.
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; let an in-progress deploy finish rather than cancelling it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/configure-pages@v5
+
+      - run: npm ci
+
+      - name: Build static export
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
+          NEXT_PUBLIC_NOINDEX: "1"
+          NEXT_TELEMETRY_DISABLED: "1"
+
+      # public/.nojekyll is copied into out/ already; this is a belt-and-braces guard so
+      # Pages never runs Jekyll (which would drop the _next/ folder).
+      - run: touch out/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

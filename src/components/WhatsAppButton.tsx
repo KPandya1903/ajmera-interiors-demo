@@ -6,7 +6,8 @@ import { WHATSAPP } from "./ui";
 
 export default function WhatsAppButton() {
   // /contact already leads with WhatsApp (channel row and form), so the floating button would only repeat it.
-  if (usePathname() === "/contact") return null;
+  const pathname = usePathname();
+  if (pathname === "/contact" || pathname === "/contact/") return null;
   return <FloatingWhatsApp />;
 }
 

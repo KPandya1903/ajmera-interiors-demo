@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ClosingCta, Founders, HowWeWork, MissionVision } from "@/components/About";
 import { PageHeader } from "@/components/PageShell";
 import team from "@/data/team.json";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 const description =
   "Ajmera Interiors is a family-owned interior design studio in Mumbai, founded by Sanket Ajmera with co-founder Ishita Mehta. Free first consultation, 3D design before work begins, and a fee of 10% of the project cost.";
@@ -40,18 +40,18 @@ const jsonLd = {
       "@type": "HomeAndConstructionBusiness",
       "@id": orgId,
       name: "Ajmera Interiors",
-      url: SITE_URL,
+      url: absoluteUrl("/"),
       description,
       image: `${SITE_URL}${ogImage.url}`,
       telephone: "+91 93264 51272",
       email: ["sanket@ajmerainteriors.com", "ishita@ajmerainteriors.com"],
       address: { "@type": "PostalAddress", addressLocality: "Mumbai", addressRegion: "Maharashtra", addressCountry: "IN" },
       areaServed: { "@type": "City", name: "Mumbai" },
-      founder: team.map((p) => ({ "@id": `${SITE_URL}/about#${p.name.toLowerCase().replace(/\s+/g, "-")}` })),
+      founder: team.map((p) => ({ "@id": `${absoluteUrl("/about")}#${p.name.toLowerCase().replace(/\s+/g, "-")}` })),
     },
     ...team.map((p) => ({
       "@type": "Person",
-      "@id": `${SITE_URL}/about#${p.name.toLowerCase().replace(/\s+/g, "-")}`,
+      "@id": `${absoluteUrl("/about")}#${p.name.toLowerCase().replace(/\s+/g, "-")}`,
       name: p.name,
       jobTitle: p.role,
       image: `${SITE_URL}${p.photo}`,

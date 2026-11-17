@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- static export: images are pre-sized WebP files */
 import { useEffect, useRef } from "react";
+import { withBase } from "@/lib/site";
 
 export type Founder = { name: string; role: string; photo: string; bio: string[] };
 
@@ -45,7 +46,7 @@ export default function FounderCard({ founder, index, mirrored }: { founder: Fou
         }`}
       >
         <img
-          src={photo}
+          src={withBase(photo)}
           alt={`${name}, ${role.toLowerCase()} of Ajmera Interiors`}
           width={900}
           height={1000}

@@ -3,10 +3,11 @@
 /* eslint-disable @next/next/no-img-element -- hero slides are pre-built responsive WebP */
 import { useCallback, useEffect, useState } from "react";
 import slides from "@/data/hero.json";
+import { withBase } from "@/lib/site";
 import { WHATSAPP, arrowNav } from "./ui";
 
 const INTERVAL = 6500; // ms per slide (inside the requested 5–7 s)
-const src = (id: string, w: number) => `/hero/${id.split("/")[1]}-${w}.webp`;
+const src = (id: string, w: number) => withBase(`/hero/${id.split("/")[1]}-${w}.webp`);
 
 export default function Hero() {
   const [active, setActive] = useState(0);

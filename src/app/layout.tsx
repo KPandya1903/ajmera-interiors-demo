@@ -3,7 +3,7 @@ import { Bodoni_Moda, Lato, Montserrat } from "next/font/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import { SITE_URL } from "@/lib/site";
+import { NOINDEX, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Typography from the original site (docs/03-design-system.md): Bodoni Moda headings, Lato body,
@@ -36,7 +36,9 @@ const description =
   "Ajmera Interiors is a family-owned interior design studio in Mumbai. Luxury homes, 3D design before work begins, and budgets that respect yours.";
 
 export const metadata: Metadata = {
+  // SITE_URL includes any base path; Next joins relative canonical/OG URLs onto its pathname.
   metadataBase: new URL(SITE_URL),
+  ...(NOINDEX && { robots: { index: false } }),
   title: {
     default: "Ajmera Interiors | Interior Designers in Mumbai",
     template: "%s | Ajmera Interiors",
