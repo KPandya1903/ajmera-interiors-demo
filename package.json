@@ -9,7 +9,10 @@
     "lint": "eslint",
     "photos": "node scripts/optimize-photos.mjs",
     "hero": "node scripts/hero-images.mjs",
-    "picker": "node scripts/make-picker.mjs"
+    "picker": "node scripts/make-picker.mjs",
+    "video-thumbs": "node scripts/video-thumbs.mjs",
+    "video-picker": "node scripts/make-video-picker.mjs",
+    "video-apply": "node scripts/apply-video-picks.mjs"
   },
   "dependencies": {
     "motion": "^14.14.0",
