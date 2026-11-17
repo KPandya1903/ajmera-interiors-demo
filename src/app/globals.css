@@ -22,6 +22,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+#top :focus-visible,
+footer :focus-visible,
+header[data-theme="dark"] :focus-visible {
+  outline-color: #e6cfa6;
+}
+
 .scrollbar-none {
   scrollbar-width: none;
 }

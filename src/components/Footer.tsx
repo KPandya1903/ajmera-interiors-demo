@@ -48,7 +48,7 @@ export default function Footer() {
         </div>
       </Container>
       <div className="border-t border-white/10">
-        <Container className="flex flex-col justify-between gap-2 py-6 text-[11px] tracking-wide text-ivory/45 sm:flex-row">
+        <Container className="flex flex-col justify-between gap-2 pb-24 pt-6 text-[11px] tracking-wide text-ivory/45 sm:flex-row sm:pb-6">
           <span>© {new Date().getFullYear()} Ajmera Interiors. All rights reserved.</span>
           <span>Interior design studio · Mumbai</span>
         </Container>

@@ -52,21 +52,22 @@ export default function Hero() {
         ) : null,
       )}
 
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,22,36,0.55)_0%,rgba(17,22,36,0)_22%,rgba(17,22,36,0)_45%,rgba(17,22,36,0.82)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,22,36,0.5)_0%,rgba(17,22,36,0)_20%,rgba(17,22,36,0.25)_40%,rgba(17,22,36,0.85)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,22,36,0.45)_0%,transparent_60%)]" />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-[1400px] flex-col justify-end px-6 pb-14 md:px-12 md:pb-20">
+      <div className="relative z-10 mx-auto flex h-full max-w-[1400px] flex-col justify-end px-6 pb-24 md:px-12 md:pb-20">
         <div className="max-w-3xl">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-ivory/75">Interior design studio · Mumbai</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-ivory/90">Interior design studio · Mumbai</p>
           <h1 className="mt-5 font-serif text-[3.25rem] font-normal leading-[0.98] tracking-[-0.015em] text-ivory sm:text-[5.5rem]">
             Homes designed
             <br />
-            around <em className="text-[#d9bd92]">the way you live.</em>
+            around <em className="text-[#e6cfa6]">the way you live.</em>
           </h1>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <a href="#wall" className="bg-ivory px-8 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
+          <div className="mt-10 grid grid-cols-1 gap-3 sm:flex">
+            <a href="#wall" className="bg-ivory px-8 py-4 text-center text-[11px] font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
               View our work
             </a>
-            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="border border-ivory/50 px-8 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-ivory transition-colors hover:border-ivory hover:bg-ivory hover:text-navy">
+            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="border border-ivory/50 px-8 py-4 text-center text-[11px] font-medium uppercase tracking-[0.22em] text-ivory transition-colors hover:border-ivory hover:bg-ivory hover:text-navy">
               Free consultation
             </a>
           </div>
@@ -76,7 +77,7 @@ export default function Hero() {
           <p key={active} className="animate-[fadeUp_900ms_ease-out] text-sm">
             <span className="font-serif text-lg italic">{s.room}</span>
             <span className="mx-3 text-ivory/40">/</span>
-            <span className="text-ivory/70">{s.home}</span>
+            <span className="whitespace-nowrap text-ivory/70">{s.home}</span>
           </p>
           <div className="flex items-center gap-5">
             <span className="hidden text-xs tabular-nums tracking-widest text-ivory/70 sm:block">

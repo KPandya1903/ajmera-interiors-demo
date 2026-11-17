@@ -15,11 +15,11 @@ export default function Process() {
         <SectionTitle>
           From first visit <em className="text-gold">to handover.</em>
         </SectionTitle>
-        <ol className="mt-16 grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-16 grid divide-y divide-black/10 border-t border-black/10 sm:grid-cols-2 sm:gap-x-16 sm:divide-y-0 lg:grid-cols-4 lg:gap-x-0 lg:divide-x">
           {steps.map(([title, text], i) => (
-            <li key={title} className="bg-ivory p-8 lg:p-10">
-              <span className="font-serif text-5xl text-gold/70">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-8 text-[13px] font-semibold uppercase tracking-[0.16em]">{title}</h3>
+            <li key={title} className="py-8 lg:px-8 lg:py-10 lg:first:pl-0 lg:last:pr-0">
+              <span className="font-serif text-4xl text-gold/70">{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="mt-6 text-[13px] font-semibold uppercase tracking-[0.16em]">{title}</h3>
               <p className="mt-3 text-[15px] leading-relaxed text-ink/65">{text}</p>
             </li>
           ))}

@@ -8,8 +8,8 @@ export default function About() {
         <div className="relative">
           <img src="/hero/EFCB3640-1280.webp" alt="Master suite with arched display niches, by Ajmera Interiors" loading="lazy" className="aspect-[4/5] w-full object-cover" />
           <div className="absolute -bottom-6 -right-2 hidden bg-navy px-8 py-6 text-ivory sm:block lg:-right-10">
-            <p className="font-serif text-4xl">2018</p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.24em] text-ivory/70">Designing Mumbai homes since</p>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-ivory/70">Designing Mumbai homes since</p>
+            <p className="mt-2 font-serif text-4xl">2018</p>
           </div>
         </div>
         <div>
