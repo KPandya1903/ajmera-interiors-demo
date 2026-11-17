@@ -92,7 +92,7 @@ export default function PhotoWall() {
                   setShown(PAGE);
                   setZoomed(null);
                 }}
-                className={`-mb-px border-b max-lg:whitespace-nowrap pb-3 pt-4 text-label lg:pt-0 font-medium uppercase tracking-[0.2em] transition-colors ${
+                className={`-mb-px border-b max-lg:whitespace-nowrap pb-3 pt-4 font-logo text-label lg:pt-0 font-medium uppercase tracking-[0.2em] transition-colors ${
                   filter === f ? "border-ink text-ink" : "border-transparent text-ink/45 hover:text-ink"
                 }`}
               >
@@ -163,7 +163,7 @@ export default function PhotoWall() {
                       isZoomed ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
                     }`}
                   >
-                    <span className="text-micro font-medium uppercase tracking-[0.22em] text-white">{p.label}</span>
+                    <span className="font-logo text-micro font-medium uppercase tracking-[0.22em] text-white">{p.label}</span>
                   </span>
                 </button>
               );
@@ -172,7 +172,7 @@ export default function PhotoWall() {
         </div>
 
         {shown < list.length && <div ref={sentinel} className="h-10" aria-hidden />}
-        <p className="pt-10 text-center text-label uppercase tracking-[0.2em] text-ink/40">
+        <p className="pt-10 text-center font-logo text-label uppercase tracking-[0.2em] text-ink/40">
           {Math.min(shown, list.length)} of {list.length} photographs
         </p>
       </Container>

@@ -1,27 +1,23 @@
-import About from "@/components/About";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import type { Metadata } from "next";
+import FilmsTeaser from "@/components/FilmsTeaser";
 import Hero from "@/components/Hero";
 import PhotoWall from "@/components/PhotoWall";
-import Process from "@/components/Process";
 import Services from "@/components/Services";
-import VideoRow from "@/components/VideoRow";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import StudioTeaser from "@/components/StudioTeaser";
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+// Header, <main id="main">, Footer (the #contact CTA strip) and the WhatsApp button come from the root layout.
 export default function Home() {
   return (
     <>
-      <Header />
-      <main>
-        <Hero />
-        <Services />
-        <PhotoWall />
-        <VideoRow />
-        <About />
-        <Process />
-      </main>
-      <Footer />
-      <WhatsAppButton />
+      <Hero />
+      <Services />
+      <PhotoWall />
+      <FilmsTeaser />
+      <StudioTeaser />
     </>
   );
 }

@@ -1,3 +1,4 @@
+// Removed from the home page for now; kept for later.
 import { Container, Eyebrow, SectionTitle } from "./ui";
 
 const steps = [

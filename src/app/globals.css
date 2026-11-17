@@ -5,9 +5,27 @@
   --color-sand: #e9e0d2;
   --color-ink: #2b2a28;
   --color-navy: #1f2a44;
-  --color-gold: #a7865a;
-  --font-serif: var(--font-serif), Georgia, serif;
-  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --color-gold: #a7865a; /* large/decorative gold only (≈3.4:1 on ivory) */
+  --color-gold-deep: #8a6d43; /* gold text under 18px on ivory (≈4.7:1) */
+  --color-gold-soft: #e6cfa6; /* gold accents on navy / dark / photo backgrounds */
+  --color-night: #161c2c; /* films section ground */
+  /* font-serif = Bodoni Moda (headings), font-sans = Lato (body). The next/font variables live on <html>. */
+  --font-serif: var(--font-heading), Georgia, serif;
+  --font-sans: var(--font-body), system-ui, sans-serif;
+}
+
+/* Montserrat: logo, nav and small uppercase labels. A utility rather than a theme token, because the
+   next/font variable already uses the name --font-logo. */
+@utility font-logo {
+  font-family: var(--font-logo), system-ui, sans-serif;
+}
+
+/* Top offset for inner pages, which start under the fixed header (solid bar = 4rem, 3.5rem on short screens). */
+@utility pt-header {
+  padding-top: calc(4rem + env(safe-area-inset-top));
+  @media (max-height: 500px) {
+    padding-top: calc(3.5rem + env(safe-area-inset-top));
+  }
 }
 
 /* Responsive tokens (not inlined, so the media queries below can retune them).
@@ -74,7 +92,7 @@ html {
 body {
   background: var(--color-ivory);
   color: var(--color-ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -97,7 +115,7 @@ body {
 #top :focus-visible,
 footer :focus-visible,
 header[data-theme="dark"] :focus-visible {
-  outline-color: #e6cfa6;
+  outline-color: var(--color-gold-soft);
 }
 
 .scrollbar-none {

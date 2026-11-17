@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { NAV } from "@/lib/site";
 import { Container, WHATSAPP } from "./ui";
 
 const social = [
@@ -14,32 +16,44 @@ export default function Footer() {
           <h2 className="font-serif text-[clamp(2.5rem,14vw,3rem)] font-normal leading-[1.02] sm:text-7xl">
             Let&apos;s design
             <br />
-            <em className="text-[#d9bd92]">your home.</em>
+            <em className="text-gold-soft">your home.</em>
           </h2>
           <div>
             <p className="max-w-sm text-[1.0625rem] leading-relaxed text-ivory/70">Tell us about your space. The first consultation is free, at your home or ours.</p>
-            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="mt-8 inline-block bg-ivory px-8 py-4 text-center text-label font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
+            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="mt-8 inline-block bg-ivory px-8 py-4 text-center font-logo text-label font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
               Message us on WhatsApp
             </a>
           </div>
         </div>
 
-        <div className="mt-24 grid gap-10 border-t border-white/15 pt-12 text-sm sm:grid-cols-3">
+        <div className="mt-24 grid gap-10 border-t border-white/15 pt-12 text-sm sm:grid-cols-2 lg:grid-cols-4">
+          <nav aria-label="Footer">
+            <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Explore</p>
+            <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1 max-lg:mt-0.5">
+              {NAV.map(({ label, href }) => (
+                <li key={href}>
+                  <Link href={href} className="block hover:text-gold-soft max-lg:py-2.5">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <div>
-            <p className="text-micro uppercase tracking-[0.24em] text-ivory/50">Call</p>
-            <a href="tel:+919326451272" className="mt-3 block hover:text-[#d9bd92] max-lg:mt-0.5 max-lg:py-2.5">+91 93264 51272</a>
-            <a href="tel:+917021336382" className="mt-1 block hover:text-[#d9bd92] max-lg:mt-0 max-lg:py-2.5">+91 70213 36382</a>
+            <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Call</p>
+            <a href="tel:+919326451272" className="mt-3 block hover:text-gold-soft max-lg:mt-0.5 max-lg:py-2.5">+91 93264 51272</a>
+            <a href="tel:+917021336382" className="mt-1 block hover:text-gold-soft max-lg:mt-0 max-lg:py-2.5">+91 70213 36382</a>
           </div>
           <div>
-            <p className="text-micro uppercase tracking-[0.24em] text-ivory/50">Email</p>
-            <a href="mailto:sanket@ajmerainteriors.com" className="mt-3 block hover:text-[#d9bd92] max-lg:mt-0.5 max-lg:py-2.5">sanket@ajmerainteriors.com</a>
-            <a href="mailto:ishita@ajmerainteriors.com" className="mt-1 block hover:text-[#d9bd92] max-lg:mt-0 max-lg:py-2.5">ishita@ajmerainteriors.com</a>
+            <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Email</p>
+            <a href="mailto:sanket@ajmerainteriors.com" className="mt-3 block hover:text-gold-soft max-lg:mt-0.5 max-lg:py-2.5">sanket@ajmerainteriors.com</a>
+            <a href="mailto:ishita@ajmerainteriors.com" className="mt-1 block hover:text-gold-soft max-lg:mt-0 max-lg:py-2.5">ishita@ajmerainteriors.com</a>
           </div>
           <div>
-            <p className="text-micro uppercase tracking-[0.24em] text-ivory/50">Follow</p>
+            <p className="font-logo text-micro uppercase tracking-[0.24em] text-ivory/50">Follow</p>
             <div className="mt-3 flex flex-wrap gap-x-6 max-lg:mt-0.5">
               {social.map(([label, href]) => (
-                <a key={label} href={href} target="_blank" rel="noreferrer" className="hover:text-[#d9bd92] max-lg:py-2.5">
+                <a key={label} href={href} target="_blank" rel="noreferrer" className="hover:text-gold-soft max-lg:py-2.5">
                   {label}
                 </a>
               ))}

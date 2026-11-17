@@ -14,7 +14,7 @@ export default function Services() {
         {items.map(([title, text]) => (
           <div key={title} className="py-10 lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <span className="block h-px w-8 bg-gold" aria-hidden />
-            <h3 className="mt-5 text-[0.8125rem] font-semibold uppercase tracking-[0.16em]">{title}</h3>
+            <h3 className="mt-5 font-logo text-[0.8125rem] font-semibold uppercase tracking-[0.16em]">{title}</h3>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink/65">{text}</p>
           </div>
         ))}

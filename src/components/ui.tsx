@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { KeyboardEvent, ReactNode } from "react";
 
 export function Container({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -6,7 +7,7 @@ export function Container({ children, className = "" }: { children: ReactNode; c
 
 export function Eyebrow({ children, light }: { children: ReactNode; light?: boolean }) {
   return (
-    <p className={`flex items-center gap-3 text-label font-medium uppercase tracking-[0.28em] ${light ? "text-[#d9bd92]" : "text-gold"}`}>
+    <p className={`flex items-center gap-3 font-logo text-label font-medium uppercase tracking-[0.28em] ${light ? "text-gold-soft" : "text-gold-deep"}`}>
       <span className="h-px w-8 bg-current" aria-hidden />
       {children}
     </p>
@@ -15,9 +16,26 @@ export function Eyebrow({ children, light }: { children: ReactNode; light?: bool
 
 export function SectionTitle({ children, light }: { children: ReactNode; light?: boolean }) {
   return (
-    <h2 className={`mt-5 font-serif text-[2.5rem] font-normal leading-[1.05] tracking-[-0.01em] max-lg:text-balance sm:text-6xl ${light ? "text-ivory" : "text-ink"}`}>
+    <h2 className={`mt-5 font-serif text-[2.5rem] font-normal leading-[1.05] tracking-[-0.01em] max-lg:text-balance sm:text-[3.5rem] sm:leading-[1.125] ${light ? "text-ivory" : "text-ink"}`}>
       {children}
     </h2>
+  );
+}
+
+/** Secondary text link with a trailing arrow ("View all films →"). Montserrat caps, 44px target. */
+export function ArrowLink({ href, children, light }: { href: string; children: ReactNode; light?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`group inline-flex min-h-11 items-center gap-3 border-b font-logo text-label font-medium uppercase tracking-[0.22em] transition-colors ${
+        light ? "border-ivory/30 text-ivory hover:border-gold-soft hover:text-gold-soft" : "border-ink/25 text-ink hover:border-gold-deep hover:text-gold-deep"
+      }`}
+    >
+      {children}
+      <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+        →
+      </span>
+    </Link>
   );
 }
 

@@ -25,7 +25,8 @@ function Poster({ v }: { v: Video }) {
   );
 }
 
-function Row({ title, items, portrait }: { title: string; items: Video[]; portrait?: boolean }) {
+/** One horizontally scrolling row of video cards, with its own player modal. Reused by the home Films teaser and /films. */
+export function VideoRail({ title, items, portrait }: { title: string; items: Video[]; portrait?: boolean }) {
   const track = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState<Video | null>(null);
   const scroll = (dir: 1 | -1) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.85, behavior: "smooth" });
@@ -69,7 +70,7 @@ function Row({ title, items, portrait }: { title: string; items: Video[]; portra
   return (
     <div>
       <div className="mb-5 flex items-center justify-between px-gutter">
-        <h3 className="text-label font-medium uppercase tracking-[0.24em] text-ivory/80">{title}</h3>
+        <h3 className="font-logo text-label font-medium uppercase tracking-[0.24em] text-ivory/80">{title}</h3>
         <div className="hidden gap-2 sm:flex">
           {([-1, 1] as const).map((d) => (
             <button
@@ -97,7 +98,7 @@ function Row({ title, items, portrait }: { title: string; items: Video[]; portra
             <Poster v={v} />
             <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             <span className="absolute inset-x-4 bottom-4 flex items-center justify-between text-ivory">
-              <span className="text-micro font-medium uppercase tracking-[0.22em]">
+              <span className="font-logo text-micro font-medium uppercase tracking-[0.22em]">
                 {v.project}
               </span>
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ivory/60 transition-colors group-hover:border-ivory group-hover:bg-ivory group-hover:text-ink">
@@ -128,19 +129,26 @@ function Row({ title, items, portrait }: { title: string; items: Video[]; portra
   );
 }
 
+/** A single row of one kind of video (optionally the first `limit`). Reels render as portrait cards. */
+export function VideoRowSection({ kind, limit, title }: { kind: Video["kind"]; limit?: number; title?: string }) {
+  const items = videos.filter((v) => v.kind === kind).slice(0, limit);
+  return <VideoRail title={title ?? (kind === "reel" ? "Reels" : "Walkthroughs")} items={items} portrait={kind === "reel"} />;
+}
+
+/** Full films section: every walkthrough and every reel. */
 export default function VideoRow() {
   return (
-    <section id="videos" className="bg-[#161c2c] py-24 md:py-32">
+    <section id="videos" className="bg-night py-24 md:py-32">
       <div className="mx-auto max-w-site">
         <div className="px-gutter pb-12">
           <Eyebrow light>Films</Eyebrow>
           <SectionTitle light>
-            Walk through <em className="text-[#d9bd92]">our homes.</em>
+            Walk through <em className="text-gold-soft">our homes.</em>
           </SectionTitle>
         </div>
         <div className="space-y-14">
-          <Row title="Walkthroughs" items={videos.filter((v) => v.kind === "walkthrough")} />
-          <Row title="Reels" items={videos.filter((v) => v.kind === "reel")} portrait />
+          <VideoRowSection kind="walkthrough" />
+          <VideoRowSection kind="reel" />
         </div>
       </div>
     </section>

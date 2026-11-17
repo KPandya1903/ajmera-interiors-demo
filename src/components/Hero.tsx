@@ -56,18 +56,18 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,22,36,0.45)_0%,transparent_60%)]" />
 
       <div className="relative z-10 mx-auto flex h-full max-w-site flex-col justify-end px-gutter pb-[max(6rem,calc(env(safe-area-inset-bottom)+5rem))] md:pb-20 short:pb-[max(1rem,env(safe-area-inset-bottom))]">
-        <div className="max-w-4xl lg:max-w-3xl">
-          <p className="text-label font-medium uppercase tracking-[0.3em] text-ivory/90 short:hidden">Interior design studio · Mumbai</p>
-          <h1 className="mt-5 font-serif text-[clamp(2.5rem,13vw,3.25rem)] font-normal leading-[0.98] tracking-[-0.015em] text-ivory sm:text-[min(5.5rem,9.5vw)] lg:text-[5.5rem] short:mt-0 short:text-[2.375rem]">
+        <div className="max-w-4xl">
+          <p className="font-logo text-label font-medium uppercase tracking-[0.3em] text-ivory/90 short:hidden">Interior design studio · Mumbai</p>
+          <h1 className="mt-5 font-serif text-[clamp(2.25rem,11.5vw,3rem)] font-normal leading-[0.98] tracking-[-0.015em] text-ivory sm:text-[min(5rem,8.4vw)] sm:leading-[1.075] lg:text-[5rem] short:mt-0 short:text-[2.375rem]">
             Homes designed
             <br />
-            around <em className="text-[#e6cfa6]">the way you live.</em>
+            around <em className="text-gold-soft">the way you live.</em>
           </h1>
           <div className="mt-10 grid grid-cols-1 gap-3 sm:flex short:mt-5">
-            <a href="#wall" className="bg-ivory px-8 py-4 text-center short:py-3 text-label font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
+            <a href="#wall" className="bg-ivory px-8 py-4 text-center short:py-3 font-logo text-label font-medium uppercase tracking-[0.22em] text-navy transition-colors hover:bg-gold hover:text-white">
               View our work
             </a>
-            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="border border-ivory/50 px-8 py-4 text-center short:py-3 text-label font-medium uppercase tracking-[0.22em] text-ivory transition-colors hover:border-ivory hover:bg-ivory hover:text-navy">
+            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="border border-ivory/50 px-8 py-4 text-center short:py-3 font-logo text-label font-medium uppercase tracking-[0.22em] text-ivory transition-colors hover:border-ivory hover:bg-ivory hover:text-navy">
               Free consultation
             </a>
           </div>
