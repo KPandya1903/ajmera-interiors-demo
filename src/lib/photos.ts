@@ -1,4 +1,5 @@
 import data from "@/data/photos.json";
+import duplicates from "@/data/duplicates.json";
 import hidden from "@/data/hidden.json";
 
 export type Photo = {
@@ -15,8 +16,15 @@ export type Photo = {
 /** Default crop focus: keep a little more floor/furniture than ceiling. Keep in sync with FOCUS_DEFAULT in scripts/optimize-photos.mjs. */
 export const FOCUS_Y = 60;
 
-/** Photos the owners unticked in the photo picker (tools/photo-picker.html). */
+/**
+ * Photos the owners unticked in the photo picker (tools/photo-picker.html).
+ * Hiding is per *scene*: if any near-duplicate frame of a scene was hidden, the frame
+ * currently chosen to represent it stays hidden too, even after re-running `npm run photos`
+ * picks a different "sharpest" frame.
+ */
 const hiddenIds = new Set<string>(hidden as string[]);
+for (const [rep, frames] of Object.entries(duplicates as Record<string, string[]>))
+  if (frames.some((f) => hiddenIds.has(f))) hiddenIds.add(rep);
 
 export const photos = (data as Photo[]).filter((p) => !hiddenIds.has(p.id));
 

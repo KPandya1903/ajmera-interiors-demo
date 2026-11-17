@@ -7,6 +7,9 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const photos = JSON.parse(await readFile(path.resolve(here, "../src/data/photos.json"), "utf8"));
 const hidden = JSON.parse(await readFile(path.resolve(here, "../src/data/hidden.json"), "utf8"));
+// Hiding is per scene (see src/lib/photos.ts): carry a hidden frame over to its group's current representative.
+const duplicates = JSON.parse(await readFile(path.resolve(here, "../src/data/duplicates.json"), "utf8"));
+for (const [rep, frames] of Object.entries(duplicates)) if (frames.some((f) => hidden.includes(f)) && !hidden.includes(rep)) hidden.push(rep);
 const outDir = path.resolve(here, "../../tools");
 await mkdir(outDir, { recursive: true });
 
