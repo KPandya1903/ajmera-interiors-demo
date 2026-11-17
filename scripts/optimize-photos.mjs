@@ -1,7 +1,7 @@
 // Turns raw-photos/<project>/*.JPG into responsive WebP + a manifest the site reads.
 // Re-runnable: already-processed photos are skipped. Usage: npm run photos
 import sharp from "sharp";
-import { readdir, mkdir, writeFile, access } from "node:fs/promises";
+import { readdir, readFile, mkdir, writeFile, access } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -75,19 +75,17 @@ for (const g of groups.values()) {
 keep.sort((a, b) => a.id.localeCompare(b.id));
 
 // --- Focal point for grid crops -----------------------------------------------
-// The wall shows portrait photos as 4:5 tiles and landscape ones as 8:5 tiles. Ask sharp's
-// "attention" strategy (skin, saturation, detail) where it would crop, and store that as a
-// CSS object-position, so the crop keeps the interesting part of the room.
-for (const p of keep) {
-  const portrait = p.h > p.w;
-  const [cw, ch] = portrait ? [640, 800] : [640, 400];
-  const { info } = await sharp(small(p))
-    .resize(cw, ch, { fit: "cover", position: sharp.strategy.attention })
-    .toBuffer({ resolveWithObject: true });
-  const scaledH = Math.round((640 * p.h) / p.w);
-  const spare = scaledH - ch;
-  p.fy = spare > 0 ? Math.round((-(info.cropOffsetTop ?? 0) / spare) * 100) : 50;
-}
+// The wall crops portrait photos (2:3) to 4:5 tiles and landscape ones (3:2) to 8:5 tiles with
+// object-fit: cover; `fy` is the vertical CSS object-position (0 = keep top, 100 = keep bottom).
+// sharp's attention/entropy strategies were tried and rejected: the bright ceiling coves and
+// LED strips fool them into keeping the ceiling, and a row-detail score with the top quarter
+// down-weighted gave almost no signal (best window only 0-9% better than a fixed one) and
+// clipped tall subjects (mirrors, plaques, taps). Checked on contact sheets of every portrait:
+// a fixed 60% (trim a little more ceiling than floor) looked as good or better on nearly all.
+// The few that need it are set by hand in src/data/focus.json: { "<photo id>": <fy 0-100> }.
+const FOCUS_DEFAULT = 60; // keep in sync with FOCUS_Y in src/lib/photos.ts
+const focus = JSON.parse(await readFile(path.resolve(here, "../src/data/focus.json"), "utf8"));
+for (const p of keep) p.fy = focus[p.id] ?? FOCUS_DEFAULT;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip working fields
 await writeFile(MANIFEST, JSON.stringify(keep.map(({ hash, sharpness, ...p }) => p)));

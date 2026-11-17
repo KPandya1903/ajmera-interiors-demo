@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- photos are pre-optimised WebP served statically */
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
-import { homeOf, photoSrc, photos, type Photo } from "@/lib/photos";
+import { FOCUS_Y, homeOf, photoSrc, photos, type Photo } from "@/lib/photos";
 import { Container, Eyebrow, SectionTitle } from "./ui";
 
 const PAGE = 36;
@@ -12,7 +12,11 @@ const ZOOM = 1.4; // clicked photo grows 40% in place
 /** Spread photos from different homes evenly so "All" doesn't show one home in a long block. */
 function interleave(list: Photo[]): Photo[] {
   const groups = new Map<string, Photo[]>();
-  for (const p of list) groups.set(homeOf(p), [...(groups.get(homeOf(p)) ?? []), p]);
+  for (const p of list) {
+    const g = groups.get(homeOf(p));
+    if (g) g.push(p);
+    else groups.set(homeOf(p), [p]);
+  }
   const lists = [...groups.values()];
   const out: Photo[] = [];
   for (let i = 0; lists.some((l) => i < l.length); i++) for (const l of lists) if (i < l.length) out.push(l[i]);
@@ -64,7 +68,8 @@ export default function PhotoWall() {
 
   const toggle = (e: MouseEvent<HTMLButtonElement>, p: Photo) => {
     e.stopPropagation();
-    setZoomed((z) => (z?.id === p.id ? null : { id: p.id, origin: originFor(e.currentTarget) }));
+    const origin = originFor(e.currentTarget); // read now: currentTarget is null once the handler returns
+    setZoomed((z) => (z?.id === p.id ? null : { id: p.id, origin }));
   };
 
   return (
@@ -98,48 +103,65 @@ export default function PhotoWall() {
           </div>
         </div>
 
-        <div className="columns-2 gap-2 md:columns-3 md:gap-3 xl:columns-4">
-          {visible.map((p) => {
-            const isZoomed = zoomed?.id === p.id;
-            return (
-              <button
-                key={p.id}
-                onClick={(e) => toggle(e, p)}
-                onMouseLeave={() => isZoomed && setZoomed(null)}
-                aria-pressed={isZoomed}
-                aria-label={`${isZoomed ? "Shrink" : "Enlarge"} photo, ${p.label}`}
-                className={`group relative mb-2 block w-full bg-sand transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:mb-3 ${
-                  isZoomed ? "z-20 shadow-[0_24px_60px_rgba(0,0,0,0.35)]" : "z-0 cursor-zoom-in"
-                }`}
-                style={{
-                  aspectRatio: `${p.w} / ${p.h}`,
-                  backgroundImage: `url(${p.blur})`,
-                  backgroundSize: "cover",
-                  transform: isZoomed ? `scale(${ZOOM})` : "scale(1)",
-                  transformOrigin: isZoomed ? zoomed.origin : undefined,
-                }}
-              >
-                <img
-                  src={photoSrc(p, 640)}
-                  srcSet={`${photoSrc(p, 640)} 640w, ${photoSrc(p, 1280)} 1280w`}
-                  sizes={isZoomed ? "50vw" : "(min-width:1280px) 25vw, (min-width:768px) 33vw, 50vw"}
-                  width={p.w}
-                  height={p.h}
-                  loading="lazy"
-                  decoding="async"
-                  alt={`Interior photo from a ${p.label} by Ajmera Interiors`}
-                  className="h-full w-full object-cover"
-                />
-                <span
-                  className={`pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-black/45 via-transparent to-transparent p-4 transition-opacity duration-500 ${
-                    isZoomed ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                  }`}
+        {/* Editorial grid: every row is exactly one portrait (4:5) tile tall; landscape photos
+            span two columns at that same height, and dense flow back-fills any holes. Row height is
+            derived from the container width (cqw) so rows line up to the pixel. */}
+        <div className="@container">
+          <div
+            className="grid grid-flow-row-dense grid-cols-[repeat(var(--cols),minmax(0,1fr))] gap-(--gap) [--cols:2] [--gap:8px] md:[--cols:3] md:[--gap:12px] xl:[--cols:4]"
+            style={{ gridAutoRows: "calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) * 1.25)" }}
+          >
+            {visible.map((p) => {
+              const isZoomed = zoomed?.id === p.id;
+              const wide = p.w > p.h;
+              return (
+                <button
+                  key={p.id}
+                  onClick={(e) => toggle(e, p)}
+                  onMouseLeave={() => isZoomed && setZoomed(null)}
+                  aria-pressed={isZoomed}
+                  aria-label={`${isZoomed ? "Shrink" : "Enlarge"} photo, ${p.label}`}
+                  className={`group relative block h-full w-full overflow-hidden bg-sand transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    wide ? "col-span-2" : ""
+                  } ${isZoomed ? "z-20 shadow-[0_24px_60px_rgba(0,0,0,0.35)]" : "z-0 cursor-zoom-in"}`}
+                  style={{
+                    backgroundImage: `url(${p.blur})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: `50% ${p.fy ?? FOCUS_Y}%`,
+                    transform: isZoomed ? `scale(${ZOOM})` : "scale(1)",
+                    transformOrigin: isZoomed ? zoomed.origin : undefined,
+                  }}
                 >
-                  <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white">{p.label}</span>
-                </span>
-              </button>
-            );
-          })}
+                  <img
+                    src={photoSrc(p, isZoomed ? 1280 : 640)}
+                    // Zoomed: always the 1280w file (browsers ignore src when srcSet is set).
+                    srcSet={isZoomed ? undefined : `${photoSrc(p, 640)} 640w, ${photoSrc(p, 1280)} 1280w`}
+                    sizes={
+                      isZoomed
+                        ? undefined
+                        : wide
+                          ? "(min-width:1280px) 50vw, (min-width:768px) 66vw, 100vw"
+                          : "(min-width:1280px) 25vw, (min-width:768px) 33vw, 50vw"
+                    }
+                    width={p.w}
+                    height={p.h}
+                    loading="lazy"
+                    decoding="async"
+                    alt={`Interior photo from a ${p.label} by Ajmera Interiors`}
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: `50% ${p.fy ?? FOCUS_Y}%` }}
+                  />
+                  <span
+                    className={`pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-black/45 via-transparent to-transparent p-4 transition-opacity duration-500 ${
+                      isZoomed ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    }`}
+                  >
+                    <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white">{p.label}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {shown < list.length && <div ref={sentinel} className="h-10" aria-hidden />}
